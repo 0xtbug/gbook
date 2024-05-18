@@ -28,15 +28,14 @@ function alert_timer($data, $location) {
     ";
 }
 
-function alert($icon, $title, $text, $location){
+function alert($icon, $text, $location){
     echo '
         <script>
             Swal.fire({
                 icon: "'.$icon.'",
-                title: "'.$title.'",
                 text: "'.$text.'",
                 showCancelButton: false,
-                confirmButtonColor: "#3085d6",
+                confirmButtonColor: "#004180",
                 cancelButtonColor: "#d33",
                 confirmButtonText: "ok"
             }).then((result) => {
