@@ -51,6 +51,7 @@ session_start();
 include_once('../functions/functions.php');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    
     loginUser($_POST['email'], $_POST['password'], $conn);
 }
 ?>
