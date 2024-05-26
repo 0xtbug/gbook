@@ -15,21 +15,27 @@
 
 
     <!-- plugins:js -->
-    <script src="../assets/vendors/js/vendor.bundle.base.js"></script>
+    <script src="<?= BASE_URL; ?>assets/vendors/js/vendor.bundle.base.js"></script>
   <!-- endinject -->
   <!-- Plugin js for this page -->
-  <script src="../assets/vendors/chart.js/Chart.min.js"></script>
-  <script src="../assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
-  <script src="../assets/vendors/progressbar.js/progressbar.min.js"></script>
-
+  <script src="<?= BASE_URL; ?>assets/vendors/chart.js/Chart.min.js"></script>
+  <script src="<?= BASE_URL; ?>assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+  <script src="<?= BASE_URL; ?>assets/vendors/progressbar.js/progressbar.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js"></script>
+  <script src="https://cdn.datatables.net/buttons/3.0.2/js/dataTables.buttons.js"></script>
+  <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.bootstrap5.js"></script>
+  <script src="<?= BASE_URL; ?>assets/js/myjs.js"></script>
+  
   <!-- End plugin js for this page -->
   <!-- inject:js -->
-  <script src="../assets/js/off-canvas.js"></script>
-  <script src="../assets/js/hoverable-collapse.js"></script>
-  <script src="../assets/js/template.js"></script>
-  <script src="../assets/js/settings.js"></script>
-  <script src="../assets/js/todolist.js"></script>
+  <script src="<?= BASE_URL; ?>assets/js/off-canvas.js"></script>
+  <script src="<?= BASE_URL; ?>assets/js/hoverable-collapse.js"></script>
+  <script src="<?= BASE_URL; ?>assets/js/template.js"></script>
+  <script src="<?= BASE_URL; ?>assets/js/settings.js"></script>
+  <script src="<?= BASE_URL; ?>assets/js/todolist.js"></script>
   <!-- endinject -->
   <!-- Custom js for this page-->
-  <script src="../assets/js/dashboard.js"></script>
-  <script src="../assets/js/Chart.roundedBarCharts.js"></script>
+  <script src="<?= BASE_URL; ?>assets/js/dashboard.js"></script>
+  <script src="<?= BASE_URL; ?>assets/js/Chart.roundedBarCharts.js"></script>

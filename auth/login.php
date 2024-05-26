@@ -48,10 +48,18 @@
 
 <?php
 session_start();
-include_once('../functions/functions.php');
+require_once '../config.php';
+require_once FUNCTIONS_PATH . 'functions.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
-    loginUser($_POST['email'], $_POST['password'], $conn);
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    $adminQuery = $conn->query("SELECT * FROM pengurus WHERE email='$email'");
+    if ($adminQuery->num_rows > 0) {
+        loginAdmin($email, $password, $conn);
+    } else {
+        loginUser($email, $password, $conn);
+    }
 }
 ?>

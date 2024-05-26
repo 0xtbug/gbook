@@ -5,6 +5,6 @@ if (!isset($_SESSION['user'])) {
     header('Location: auth/login.php'); 
     exit();
 }else{
-    header('Location: pages/dashboard.php');
+    header('Location: pages/index.php');
     exit();
 }

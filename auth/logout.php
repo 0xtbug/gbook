@@ -1,10 +1,8 @@
 <?php
+require_once '../config.php';
 
-include_once('../functions/functions.php');
-
-if (!isset($_SESSION['user'])) {
-    header('Location: login.php');
-    exit();
-}elseif($_SERVER["REQUEST_METHOD"] == "POST") {
-    logoutUser();
-}
+session_start();
+session_unset();
+session_destroy(); 
+header('Location: ' . BASE_URL . 'auth/login.php');
+exit();

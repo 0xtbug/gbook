@@ -1,6 +1,13 @@
-<div class="container-scroller"> 
-    <!-- partial:partials/_navbar.html -->
-    <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
+<?php
+require_once FUNCTIONS_PATH . 'functions.php';
+
+// Ambil daftar kategori
+$bookCategories = getCategoriesBook($conn);
+$journalCategories = getCategoriesJournalArticel($conn);
+?>
+  
+  <!-- partial:partials/_navbar.html -->
+   <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
         <div class="me-3">
           <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-bs-toggle="minimize">
@@ -8,56 +15,53 @@
           </button>
         </div>
         <div>
-          <a class="navbar-brand brand-logo" href="index.html">
-            <img src="img-horizontal.png" alt="logo" />
+          <a class="navbar-brand brand-logo" href="index.php">
+            <img src="<?= BASE_URL ?>assets/images/gubook.svg" alt="logo" style="height:100px; margin-top:2px;"/>
           </a>
-          <a class="navbar-brand brand-logo-mini" href="index.html">
-            <img src="img-mini.png" alt="logo" />
+          <a class="navbar-brand brand-logo-mini d-none" href="index.html">
+            <img src="images/logo-mini.svg" alt="logo" />
           </a>
         </div>
       </div>
+      
       <div class="navbar-menu-wrapper d-flex align-items-top"> 
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item dropdown d-none d-lg-block">
-            <a class="nav-link dropdown-bordered dropdown-toggle dropdown-toggle-split" id="messageDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false"> Kategori </a>
-            <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="messageDropdown">
-              <a class="dropdown-item py-3" >
-                <p class="mb-0 font-weight-medium float-left">Select category</p>
-              </a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item preview-item">
-                <div class="preview-item-content flex-grow py-2">
-                  <p class="preview-subject ellipsis font-weight-medium text-dark">Bootstrap Bundle </p>
-                  <p class="fw-light small-text mb-0">This is a Bundle featuring 16 unique dashboards</p>
-                </div>
-              </a>
-              <a class="dropdown-item preview-item">
-                <div class="preview-item-content flex-grow py-2">
-                  <p class="preview-subject ellipsis font-weight-medium text-dark">Angular Bundle</p>
-                  <p class="fw-light small-text mb-0">Everything you’ll ever need for your Angular projects</p>
-                </div>
-              </a>
-              <a class="dropdown-item preview-item">
-                <div class="preview-item-content flex-grow py-2">
-                  <p class="preview-subject ellipsis font-weight-medium text-dark">VUE Bundle</p>
-                  <p class="fw-light small-text mb-0">Bundle of 6 Premium Vue Admin Dashboard</p>
-                </div>
-              </a>
-              <a class="dropdown-item preview-item">
-                <div class="preview-item-content flex-grow py-2">
-                  <p class="preview-subject ellipsis font-weight-medium text-dark">React Bundle</p>
-                  <p class="fw-light small-text mb-0">Bundle of 8 Premium React Admin Dashboard</p>
-                </div>
-              </a>
-            </div>
-          </li>
-          
-          <div class="input-group text-center">
-            
-            <input type="text" class="form-control" placeholder="cari" aria-label="cari" aria-describedby="basic-addon2">
-            <span class="input-group-text bg-primary text-white"><i class="icon-search"></i></span>
-          </div>
-          
+      <nav class="nav justify-content-center" aria-label="Secondary navigation">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-primary" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Select Category
+            </a>
+            <ul class="dropdown-menu">
+            <li class="dropdown-submenu">
+                <a class="dropdown-item" href="#"> Buku <span class="float-end custom-toggle-arrow">&#187</span></a>
+                <ul class="dropdown-menu">
+                    <?php foreach ($bookCategories as $category): ?>
+                        <li><a class="dropdown-item" href="<?= BASE_URL ?>pages/index.php?category=<?= urlencode($category) ?>&type=book"><?= htmlspecialchars($category) ?></a></li>
+                    <?php endforeach; ?>
+                </ul>
+            </li>
+            <li class="dropdown-submenu">
+                <a class="dropdown-item" href="#"> Journal & Artikel <span class="float-end custom-toggle-arrow">&#187</span></a>
+                <ul class="dropdown-menu">
+                    <?php foreach ($journalCategories as $category): ?>
+                        <li><a class="dropdown-item" href="<?= BASE_URL ?>pages/index.php?category=<?= urlencode($category) ?>&type=journal&artikel"><?= htmlspecialchars($category) ?></a></li>
+                    <?php endforeach; ?>
+                </ul>
+            </li>
+            </ul>
+        </li>
+    </nav>
+
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+              
+        <li class="nav-item">
+            <form class="search-form" action="<?= BASE_URL ?>pages/index.php" method="GET">
+                <i class="icon-search"></i>
+                <input type="search" name="search" class="form-control" placeholder="Search Here" title="Search here">
+                <input type="hidden" name="type" value="search">
+            </form>
+        </li>
+
+
           <li class="nav-item dropdown"> 
             <a class="nav-link count-indicator" id="countDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="icon-bell"></i>
@@ -65,43 +69,26 @@
             </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="countDropdown">
               <a class="dropdown-item py-3">
-                <p class="mb-0 font-weight-medium float-left">You have 7 unread mails </p>
+                <p class="mb-0 font-weight-medium float-left">You have 1 unread mails </p>
                 <span class="badge badge-pill badge-primary float-right">View all</span>
               </a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item preview-item">
                 <div class="preview-thumbnail">
-                  <img src="images/faces/face10.jpg" alt="image" class="img-sm profile-pic">
+                  <img src="https://i.pinimg.com/736x/d3/30/d9/d330d9d6ca79833cde7bdd54ad2aea92.jpg" alt="image" class="img-sm profile-pic">
                 </div>
                 <div class="preview-item-content flex-grow py-2">
-                  <p class="preview-subject ellipsis font-weight-medium text-dark">Marian Garner </p>
-                  <p class="fw-light small-text mb-0"> The meeting is cancelled </p>
-                </div>
-              </a>
-              <a class="dropdown-item preview-item">
-                <div class="preview-thumbnail">
-                  <img src="images/faces/face12.jpg" alt="image" class="img-sm profile-pic">
-                </div>
-                <div class="preview-item-content flex-grow py-2">
-                  <p class="preview-subject ellipsis font-weight-medium text-dark">David Grey </p>
-                  <p class="fw-light small-text mb-0"> The meeting is cancelled </p>
-                </div>
-              </a>
-              <a class="dropdown-item preview-item">
-                <div class="preview-thumbnail">
-                  <img src="images/faces/face1.jpg" alt="image" class="img-sm profile-pic">
-                </div>
-                <div class="preview-item-content flex-grow py-2">
-                  <p class="preview-subject ellipsis font-weight-medium text-dark">Travis Jenkins </p>
-                  <p class="fw-light small-text mb-0"> The meeting is cancelled </p>
+                  <p class="preview-subject ellipsis font-weight-medium text-dark">Tubagus Ganteng</p>
+                  <p class="fw-light small-text mb-0"> LARIIIIIIII ADA METEORRRR   </p>
                 </div>
               </a>
             </div>
           </li>
           <li class="nav-item dropdown d-none d-lg-block user-dropdown">
             <a class="nav-link" id="UserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-              <img class="img-xs rounded-circle" src="images/faces/face8.jpg" alt="Profile image"> </a>
-            <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
+            <i class="mdi mdi-account-circle" style="font-size: 2rem;"></i>
+            </a>
+            <!-- <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
               <div class="dropdown-header text-center">
                 <img class="img-md rounded-circle" src="images/faces/face8.jpg" alt="Profile image">
                 <p class="mb-1 mt-3 font-weight-semibold">Allen Moreno</p>
@@ -112,7 +99,7 @@
               <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-calendar-check-outline text-primary me-2"></i> Activity</a>
               <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-help-circle-outline text-primary me-2"></i> FAQ</a>
               <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-power text-primary me-2"></i>Sign Out</a>
-            </div>
+            </div> -->
           </li>
         </ul>
         <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-bs-toggle="offcanvas">
@@ -276,23 +263,60 @@
       <!-- partial:partials/_sidebar.html -->
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <ul class="nav">
-          <li class="nav-item">
-            <a class="nav-link" href="dashboard.php">
-              <i class="mdi mdi-home-variant menu-icon"></i>
-              <span class="menu-title">Dashboard</span>
+
+        <li class="nav-item nav-category">Menu</li>
+        <?php if(isset($_SESSION['admin'])): ?>
+        <li class="nav-item">
+            <a class="nav-link" href="<?= BASE_URL . 'pages/admin/books/manage_books.php';?>">
+                <i class="mdi mdi-library-books menu-icon"></i>
+                <span class="menu-title">Mengelola Buku</span>
+                <i class="menu-arrow"></i> 
             </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="s.html">
-              <i class="mdi mdi-book-multiple menu-icon"></i>
-              <span class="menu-title">Upload Journal</span>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="<?= BASE_URL . 'pages/admin/journal/manage_journals.php';?>">
+                <i class="mdi mdi-book-multiple menu-icon"></i>
+                <span class="menu-title">Mengelola Journal</span>
+                <i class="menu-arrow"></i> 
             </a>
-          </li>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="charts">
+              <i class="menu-icon mdi mdi-chart-line"></i>
+              <span class="menu-title">Mengelola Kategori</span>
+              <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="ui-basic">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="<?= BASE_URL . 'pages/admin/category/books/manage_categories.php';?>">Buku</a></li>
+                <li class="nav-item"> <a class="nav-link" href="<?= BASE_URL . 'pages/admin/category/journal_artikel/manage_categories.php';?>">Journal & Artikel</a></li>
+              </ul>
+            </div>
+        </li>
+        <?php else: ?>
           <li class="nav-item">
-            <a class="nav-link" href="../auth/logout.php">
+            <a class="nav-link" href="index.php">
+                <i class="mdi mdi-home-variant menu-icon"></i>
+                <span class="menu-title">Dashboard</span>
+                <i class="menu-arrow"></i> 
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="upload_journal.php" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+                <i class="mdi mdi-book-multiple menu-icon"></i>
+                <span class="menu-title">Upload Journal</span>
+                <i class="menu-arrow"></i> 
+            </a>
+        </li>
+        <?php endif; ?>
+        <li class="nav-item nav-category">Logout</li>
+        <li class="nav-item">
+          <a class="nav-link" id="logoutLink" data-bs-toggle="collapse" href="#ui-logout" aria-expanded="false" aria-controls="ui-logout">
               <i class="mdi mdi-logout menu-icon"></i>
               <span class="menu-title">Logout</span>
-            </a>
-          </li>
+              <i class="menu-arrow"></i> 
+          </a>
+      </li>
+         
         </ul>
       </nav>

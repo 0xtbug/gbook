@@ -48,7 +48,8 @@
 </html>
 
 <?php
-include_once('../functions/functions.php');
+require_once '../config.php';
+require_once FUNCTIONS_PATH . 'functions.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     registerUser($_POST['email'], $_POST['password'], $_POST['confirm_password'], $conn);
 }

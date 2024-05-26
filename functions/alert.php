@@ -7,7 +7,7 @@ function alert_timer($data, $location) {
         Swal.fire({
             icon: 'success',
             text: '".$data."',
-            timer: 2000,
+            timer: 1000,
             timerProgressBar: true,
             didOpen: () => {
                 Swal.showLoading()
