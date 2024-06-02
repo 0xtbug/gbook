@@ -92,6 +92,89 @@ function getBookDetails($id, $conn) {
 
 
 
+function isFavoriteBook($user_id, $book_id, $conn) {
+    $stmt = $conn->prepare("SELECT * FROM favorite_books WHERE user_id = ? AND book_id = ?");
+    $stmt->bind_param("ii", $user_id, $book_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $isFavorite = $result->num_rows > 0;
+    $stmt->close();
+    return $isFavorite;
+}
+
+function isBookmark($user_id, $book_id, $conn) {
+    $stmt = $conn->prepare("SELECT * FROM bookmarks WHERE user_id = ? AND book_id = ?");
+    $stmt->bind_param("ii", $user_id, $book_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $isBookmark = $result->num_rows > 0;
+    $stmt->close();
+    return $isBookmark;
+}
+
+function addFavoriteBook($user_id, $book_id, $conn) {
+    if (!isFavoriteBook($user_id, $book_id, $conn)) {
+        $stmt = $conn->prepare("INSERT INTO favorite_books (user_id, book_id) VALUES (?, ?)");
+        $stmt->bind_param("ii", $user_id, $book_id);
+        return $stmt->execute();
+    }
+    return false;
+}
+
+function removeFavoriteBook($user_id, $book_id, $conn) {
+    $stmt = $conn->prepare("DELETE FROM favorite_books WHERE user_id = ? AND book_id = ?");
+    $stmt->bind_param("ii", $user_id, $book_id);
+    return $stmt->execute();
+}
+
+function addBookmark($user_id, $book_id, $conn) {
+    if (!isBookmark($user_id, $book_id, $conn)) {
+        $stmt = $conn->prepare("INSERT INTO bookmarks (user_id, book_id) VALUES (?, ?)");
+        $stmt->bind_param("ii", $user_id, $book_id);
+        return $stmt->execute();
+    }
+    return false;
+}
+
+function removeBookmark($user_id, $book_id, $conn) {
+    $stmt = $conn->prepare("DELETE FROM bookmarks WHERE user_id = ? AND book_id = ?");
+    $stmt->bind_param("ii", $user_id, $book_id);
+    return $stmt->execute();
+}
+
+function getUserBookmarks($user_id, $conn) {
+    $stmt = $conn->prepare("SELECT b.id, b.judul, b.pengarang, b.penerbit, b.tanggal_terbit, b.cover 
+                            FROM bookmarks bm 
+                            JOIN books b ON bm.book_id = b.id 
+                            WHERE bm.user_id = ?");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $bookmarks = [];
+    while ($row = $result->fetch_assoc()) {
+        $bookmarks[] = $row;
+    }
+    $stmt->close();
+    return $bookmarks;
+}
+
+function getFavoriteBooks($user_id, $conn) {
+    $stmt = $conn->prepare("SELECT b.id, b.judul, b.pengarang, b.penerbit, b.cover, b.url_buku 
+                            FROM favorite_books f 
+                            JOIN books b ON f.book_id = b.id 
+                            WHERE f.user_id = ?");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $favorite_books = [];
+    while ($row = $result->fetch_assoc()) {
+        $favorite_books[] = $row;
+    }
+
+    $stmt->close();
+    return $favorite_books;
+}
 
 
 // =============================== END OF USERS FUNCTIONS ==================================
@@ -690,7 +773,6 @@ function submitReview($user_id, $book_id, $rating, $review_text, $conn) {
     }
 }
 
-// Fungsi untuk mengambil review buku
 function getBookReviews($bookId, $conn) {
     $stmt = $conn->prepare("SELECT r.rating, r.review_text, m.email AS username FROM reviews r JOIN mahasiswa m ON r.user_id = m.id WHERE r.book_id = ?");
     $stmt->bind_param("i", $bookId);
@@ -711,6 +793,6 @@ function getAverageRating($bookId, $conn) {
     $stmt->close();
     return $data;
 }
-    
+
 // =============================== END OF GENERAL FUNCTIONS ==================================
 ?>
