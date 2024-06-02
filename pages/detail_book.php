@@ -23,6 +23,10 @@ $ratingData = getAverageRating($bookId, $conn);
 $averageRating = $ratingData['average_rating'] !== null ? round($ratingData['average_rating'], 1) : 0;
 $totalRatings = $ratingData['total_ratings'];
 
+// Memeriksa apakah buku sudah di favorite atau bookmark
+$isFavorite = isFavoriteBook($_SESSION['user_id'], $bookId, $conn);
+$isBookmark = isBookmark($_SESSION['user_id'], $bookId, $conn);
+
 if (!$book) {
     echo("Buku tidak ditemukan.<br>Kembali ke halaman utama dalam 3 detik...");
     echo '
@@ -53,8 +57,12 @@ require_once TEMPLATE_PATH . '/navbar.php';
         <div class="card">
           <div class="" id="detailCard">
             <div class="card-footer d-flex justify-content-end">
-              <button class="btn btn-link text-danger"><i class="mdi mdi-heart" style="font-size: 1.5rem;"></i></button>
-              <button class="btn btn-link"><i class="mdi mdi-bookmark" style="font-size: 1.5rem;"></i></button>
+              <button class="btn btn-link text-black favoriteBtn <?= $isFavorite ? 'text-danger' : ''; ?>" data-id="<?= $book['id']; ?>">
+                <i class="mdi mdi-heart<?= $isFavorite ? '' : '-outline'; ?>" style="font-size: 1.5rem;"></i>
+              </button>
+              <button class="btn btn-link text-black bookmarkBtn <?= $isBookmark ? 'text-danger' : ''; ?>" data-id="<?= $book['id']; ?>">
+                <i class="mdi mdi-bookmark<?= $isBookmark ? '' : '-outline'; ?>" style="font-size: 1.5rem;"></i>
+              </button>
             </div>
           </div>
           <div class="card-body" id="bookContainer">
@@ -71,9 +79,9 @@ require_once TEMPLATE_PATH . '/navbar.php';
             </div>
             <hr>
             <h5 class="card-text fw-bold">Reviews</h5>
-            <div class="review mt-3" style="max-height: 300px; overflow-y: auto;">
+            <div class="review mt-3" style="max-height: 200px; overflow-y: auto;">
               <?php if (empty($reviews)): ?>
-                <p class="text-center">Belum ada komentar di buku ini.</p>
+                <p>Belum ada komentar di buku ini.</p>
               <?php else: ?>
                 <?php foreach ($reviews as $review): ?>
                 <div class="d-flex">
@@ -95,7 +103,7 @@ require_once TEMPLATE_PATH . '/navbar.php';
             <h5 class="card-text fw-bold">Tulis Review</h5>
             <form class="review-input" method="post">
               <input type="hidden" name="book_id" value="<?= $bookId; ?>">
-              <div class="review-stars">
+              <div class="review-stars" style="font-size: 35px;color: gold;">
                 <input type="hidden" name="rating" id="rating" value="0">
                 <span data-rating="1">&#9734;</span>
                 <span data-rating="2">&#9734;</span>
@@ -103,8 +111,13 @@ require_once TEMPLATE_PATH . '/navbar.php';
                 <span data-rating="4">&#9734;</span>
                 <span data-rating="5">&#9734;</span>
               </div>
-              <textarea class="review-textarea form-control mt-2" rows="3" name="review_text" placeholder="Tulis review"></textarea>
-              <button class="review-submit btn btn-primary mt-2" type="submit">Kirim Review</button>
+              <div class="form-floating">
+                <textarea class="review-textarea form-control"  name="review_text" placeholder="Tulis review" id="floatingTextarea" style="height: 100px" required></textarea>
+                <label for="floatingTextarea">Tulis review</label>
+              </div>
+              <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button class="review-submit btn btn-primary mt-2 btn-sm" type="submit"><span class="mdi mdi-send"></span></button>
+              </div>
             </form>
           </div>
         </div>
@@ -119,38 +132,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $rating = sanitizeInput($_POST['rating'], $conn);
   $review_text = sanitizeInput($_POST['review_text'], $conn);
 
+  // Validasi rating
+  if (empty($rating) || $rating < 1 || $rating > 5) {
+      alert("error", "Rating harus diantara 1 sampai 5.", "detail_book.php?id=$book_id");
+      exit();
+  }
   submitReview($user_id, $book_id, $rating, $review_text, $conn);
 }
-
 ?>
-<script>
-function showBook(bookUrl) {
-    var iframeHtml = '<iframe src="' + bookUrl + '" style="width: 100%; height: 80vh;" frameborder="0"></iframe>';
-    document.getElementById('bookContainer').innerHTML = iframeHtml;
-
-    // Sembunyikan card dan footer
-    document.getElementById('bookCard').style.display = 'none';
-    document.getElementById('detailCard').style.display = 'none';
-
-    // Ubah kelas kolom menjadi col-lg-12
-    var detailCardContainer = document.getElementById('detailCardContainer');
-    detailCardContainer.classList.remove('col-md-8');
-    detailCardContainer.classList.add('col-lg-12');
-}
-
-// Menangani klik pada bintang rating
-document.querySelectorAll('.review-stars span').forEach(function(star) {
-    star.addEventListener('click', function() {
-        var rating = this.getAttribute('data-rating');
-        document.getElementById('rating').value = rating;
-        var stars = this.parentElement.children;
-        for (var i = 0; i < stars.length; i++) {
-            if (i < rating) {
-                stars[i].innerHTML = '&#9733;';
-            } else {
-                stars[i].innerHTML = '&#9734;';
-            }
-        }
-    });
-});
-</script>

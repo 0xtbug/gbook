@@ -302,9 +302,23 @@ $journalCategories = getCategoriesJournalArticel($conn);
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="upload_journal.php" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+            <a class="nav-link" href="upload_journal.php">
                 <i class="mdi mdi-book-multiple menu-icon"></i>
                 <span class="menu-title">Upload Journal</span>
+                <i class="menu-arrow"></i> 
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="manage_bookmark.php">
+                <i class="mdi mdi-bookmark-outline menu-icon"></i>
+                <span class="menu-title">Penanda Buku</span>
+                <i class="menu-arrow"></i> 
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="manage_favorite.php">
+                <i class="mdi mdi-heart-outline menu-icon"></i>
+                <span class="menu-title">Favorit</span>
                 <i class="menu-arrow"></i> 
             </a>
         </li>

@@ -52,5 +52,8 @@
       margin-top: 1px;
       line-height: 12px;
 }
+.review-stars span {
+        cursor: pointer; /* Menambahkan gaya cursor pointer */
+}
 </style>
 <body>
