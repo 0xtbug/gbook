@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: May 26, 2024 at 10:40 PM
+-- Generation Time: Jun 04, 2024 at 08:03 AM
 -- Server version: 8.0.30
--- PHP Version: 8.1.10
+-- PHP Version: 8.2.19
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -22,6 +22,18 @@ SET time_zone = "+00:00";
 --
 CREATE DATABASE IF NOT EXISTS `gubook` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE `gubook`;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bookmarks`
+--
+
+CREATE TABLE `bookmarks` (
+  `id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `book_id` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -86,8 +98,31 @@ CREATE TABLE `categories_journal_artikel` (
 --
 
 INSERT INTO `categories_journal_artikel` (`id`, `nama_kategori`) VALUES
-(1, 'test'),
-(7, 'aa');
+(10, 'Informatik'),
+(11, 'soshum'),
+(12, 'hukum'),
+(13, 'agama'),
+(15, 'test'),
+(16, 'testa');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `favorite_books`
+--
+
+CREATE TABLE `favorite_books` (
+  `id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `book_id` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Dumping data for table `favorite_books`
+--
+
+INSERT INTO `favorite_books` (`id`, `user_id`, `book_id`) VALUES
+(42, 1, 46);
 
 -- --------------------------------------------------------
 
@@ -97,7 +132,10 @@ INSERT INTO `categories_journal_artikel` (`id`, `nama_kategori`) VALUES
 
 CREATE TABLE `journal_artikel` (
   `id` int NOT NULL,
-  `judul` varchar(255) DEFAULT NULL
+  `judul` varchar(255) NOT NULL,
+  `penulis` varchar(255) NOT NULL,
+  `tanggal_terbit` date NOT NULL,
+  `nama_kategori` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -154,21 +192,65 @@ CREATE TABLE `reviews` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+-- --------------------------------------------------------
+
 --
--- Dumping data for table `reviews`
+-- Table structure for table `upload_journal`
 --
 
-INSERT INTO `reviews` (`id`, `user_id`, `book_id`, `rating`, `review_text`, `created_at`) VALUES
-(10, 1, 37, 5, 'bukunya keren!', '2024-05-26 22:03:58'),
-(11, 1, 37, 2, 'Kurang 🙏', '2024-05-26 22:08:04'),
-(12, 1, 37, 3, 'test', '2024-05-26 22:16:48'),
-(13, 1, 37, 3, 'gaag', '2024-05-26 22:16:53'),
-(14, 1, 37, 2, 'fafff', '2024-05-26 22:17:02'),
-(15, 1, 44, 4, 'mantap', '2024-05-26 22:21:12');
+CREATE TABLE `upload_journal` (
+  `id` int NOT NULL,
+  `ja_id` varchar(255) DEFAULT NULL,
+  `user_id` int NOT NULL,
+  `title` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `subtitle` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `abstract` text,
+  `keyword` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `reference` text CHARACTER SET utf8 COLLATE utf8_general_ci,
+  `file_path_docs` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `file_path_pdf` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `date_uploads` datetime DEFAULT NULL,
+  `category` varchar(255) DEFAULT 'Lainnya',
+  `language` varchar(255) DEFAULT NULL,
+  `finish` tinyint(1) DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Dumping data for table `upload_journal`
+--
+
+INSERT INTO `upload_journal` (`id`, `ja_id`, `user_id`, `title`, `subtitle`, `abstract`, `keyword`, `reference`, `file_path_docs`, `file_path_pdf`, `date_uploads`, `category`, `language`, `finish`) VALUES
+(58, 'JA_665ec8f2640a6', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-06-04 14:57:38', 'Lainnya', NULL, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `upload_journal_user`
+--
+
+CREATE TABLE `upload_journal_user` (
+  `id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `first_name` varchar(255) NOT NULL,
+  `middle_name` varchar(255) DEFAULT NULL,
+  `last_name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `affiliation` varchar(255) DEFAULT NULL,
+  `country` varchar(255) NOT NULL,
+  `status` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `bookmarks`
+--
+ALTER TABLE `bookmarks`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `book_id` (`book_id`);
 
 --
 -- Indexes for table `books`
@@ -187,6 +269,14 @@ ALTER TABLE `categories_books`
 --
 ALTER TABLE `categories_journal_artikel`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `favorite_books`
+--
+ALTER TABLE `favorite_books`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `book_id` (`book_id`);
 
 --
 -- Indexes for table `journal_artikel`
@@ -216,26 +306,50 @@ ALTER TABLE `reviews`
   ADD KEY `book_id` (`book_id`);
 
 --
+-- Indexes for table `upload_journal`
+--
+ALTER TABLE `upload_journal`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `upload_journal_user`
+--
+ALTER TABLE `upload_journal_user`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `bookmarks`
+--
+ALTER TABLE `bookmarks`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `books`
 --
 ALTER TABLE `books`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT for table `categories_books`
 --
 ALTER TABLE `categories_books`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=88;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=89;
 
 --
 -- AUTO_INCREMENT for table `categories_journal_artikel`
 --
 ALTER TABLE `categories_journal_artikel`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
+--
+-- AUTO_INCREMENT for table `favorite_books`
+--
+ALTER TABLE `favorite_books`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT for table `journal_artikel`
@@ -259,11 +373,37 @@ ALTER TABLE `pengurus`
 -- AUTO_INCREMENT for table `reviews`
 --
 ALTER TABLE `reviews`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+
+--
+-- AUTO_INCREMENT for table `upload_journal`
+--
+ALTER TABLE `upload_journal`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+
+--
+-- AUTO_INCREMENT for table `upload_journal_user`
+--
+ALTER TABLE `upload_journal_user`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `bookmarks`
+--
+ALTER TABLE `bookmarks`
+  ADD CONSTRAINT `bookmarks_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `mahasiswa` (`id`),
+  ADD CONSTRAINT `bookmarks_ibfk_2` FOREIGN KEY (`book_id`) REFERENCES `books` (`id`);
+
+--
+-- Constraints for table `favorite_books`
+--
+ALTER TABLE `favorite_books`
+  ADD CONSTRAINT `favorite_books_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `mahasiswa` (`id`),
+  ADD CONSTRAINT `favorite_books_ibfk_2` FOREIGN KEY (`book_id`) REFERENCES `books` (`id`);
 
 --
 -- Constraints for table `reviews`
