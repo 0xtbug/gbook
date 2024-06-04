@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('Asia/Jakarta');
 
 define('BASE_URL', 'http://localhost/gbook/');
 
@@ -7,6 +8,7 @@ define('ROOT_PATH', __DIR__);
 
 // Define the config path
 define('CONFIG_PATH', ROOT_PATH . '/config.php');
+
 // Define paths for each directory
 define('ASSETS_PATH', 'assets/');
 define('AUTH_PATH', ROOT_PATH . '/auth/');
@@ -15,3 +17,4 @@ define('DATABASE_PATH', ROOT_PATH . '/database/');
 define('PAGES_PATH', ROOT_PATH . '/pages/');
 define('TEMPLATE_PATH', ROOT_PATH . '/template/');
 define('UPLOADS_PATH', ROOT_PATH . '/uploads/');
+define('SSP_PATH', ROOT_PATH . '/ssp.class.php');
