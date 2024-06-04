@@ -17,7 +17,7 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.css" />
   <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.2/css/buttons.bootstrap5.css">
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css" />
    <!-- End plugin css for this page -->
   <!-- inject:css -->
   <link rel="stylesheet" href="<?= BASE_URL;?>assets/css/vertical-layout-light/style.css">
@@ -55,5 +55,48 @@
 .review-stars span {
         cursor: pointer; /* Menambahkan gaya cursor pointer */
 }
+.dz-success-mark svg, .dz-error-mark svg {
+            display: none;
+        }
+        .dz-preview.dz-success .dz-success-mark {
+            display: block;
+        }
+        .dz-preview .dz-success-mark {
+            display: none;
+        }
+        .dz-preview .dz-error-mark {
+            display: none;
+        }
+        .dz-preview .dz-progress {
+            display: none;
+        }
+        .dz-preview.dz-success .dz-details {
+            border: 1px solid #4caf50;
+            border-radius: 5px;
+            padding: 10px;
+            background: #e8f5e9;
+        }
+        .dz-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .dz-details .dz-filename {
+            display: flex;
+            align-items: center;
+        }
+        .dz-details .dz-filename span {
+            margin-left: 10px;
+        }
+        .dz-size, .dz-remove {
+            display: flex;
+            align-items: center;
+            color: #555;
+        }
+        .dz-remove {
+            background: none;
+            border: none;
+            color: red;
+        }
 </style>
 <body>

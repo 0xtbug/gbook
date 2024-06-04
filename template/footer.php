@@ -26,6 +26,7 @@
   <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js"></script>
   <script src="https://cdn.datatables.net/buttons/3.0.2/js/dataTables.buttons.js"></script>
   <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.bootstrap5.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"></script>
   <script src="<?= BASE_URL; ?>assets/js/myjs.js"></script>
   
   <!-- End plugin js for this page -->
