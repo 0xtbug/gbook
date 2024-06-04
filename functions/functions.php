@@ -176,6 +176,113 @@ function getFavoriteBooks($user_id, $conn) {
     return $favorite_books;
 }
 
+function generateJAID($user_id) {
+    return 'JA_' . uniqid();
+}
+
+function saveNewSubmission($user_id, $ja_id, $conn) {
+    $stmt = $conn->prepare("DELETE FROM upload_journal WHERE finish = 0");
+    $stmt->execute();
+    $stmt->close();
+    $stmt = $conn->prepare("INSERT INTO upload_journal (user_id, ja_id, date_uploads) VALUES (?, ?, NOW())");
+    $stmt->bind_param("is", $user_id, $ja_id);
+
+    if ($stmt->execute()) {
+        $stmt->close();
+        return true;
+    } else {
+        $stmt->close();
+        return false;
+    }
+}
+
+function saveSubmissionData($user_id, $category, $language, $conn) {
+    // Periksa apakah ada data dengan ja_id yang finish = 0
+    $checkStmt = $conn->prepare("SELECT ja_id FROM upload_journal WHERE user_id = ? AND finish = 0");
+    $checkStmt->bind_param("i", $user_id);
+    $checkStmt->execute();
+    $checkStmt->bind_result($ja_id);
+    $checkStmt->fetch();
+    $checkStmt->close();
+
+    if ($ja_id) {
+        $stmt = $conn->prepare("UPDATE upload_journal SET category = ?, language = ?, date_uploads = NOW() WHERE ja_id = ?");
+        $stmt->bind_param("sss", $category, $language, $ja_id);
+    } else {
+        $stmt = $conn->prepare("INSERT INTO upload_journal (user_id, category, language, date_uploads) VALUES (?, ?, ?, NOW())");
+        $stmt->bind_param("iss", $user_id, $category, $language);
+    }
+
+    if ($stmt->execute()) {
+        $stmt->close();
+        return true;
+    } else {
+        $stmt->close();
+        return false;
+    }
+}
+
+
+function saveUploadedDocx($user_id, $fileName, $conn) {
+    $checkStmt = $conn->prepare("SELECT COUNT(*) FROM upload_journal WHERE user_id = ?");
+    $checkStmt->bind_param("i", $user_id);
+    $checkStmt->execute();
+    $checkStmt->bind_result($count);
+    $checkStmt->fetch();
+    $checkStmt->close();
+
+    if ($count > 0) {
+        $stmt = $conn->prepare("UPDATE upload_journal SET file_path_docs = ?, date_uploads = NOW() WHERE user_id = ?");
+        $stmt->bind_param("si", $fileName, $user_id);
+    } else {
+        $stmt = $conn->prepare("INSERT INTO upload_journal (user_id, file_path_docs, date_uploads) VALUES (?, ?, NOW())");
+        $stmt->bind_param("is", $user_id, $fileName);
+    }
+
+    if ($stmt->execute()) {
+        $stmt->close();
+        return true;
+    } else {
+        $stmt->close();
+        return false;
+    }
+}
+
+function saveAuthorData($user_id, $firstName, $middleName, $lastName, $email, $affiliation, $country, $conn) {
+    $status = "Awaiting Assignment";
+    $stmt = $conn->prepare("INSERT INTO upload_journal_user (user_id, first_name, middle_name, last_name, email, affiliation, country, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssssssss", $user_id, $firstName, $middleName, $lastName, $email, $affiliation, $country, $status);
+    
+    if ($stmt->execute()) {
+        $stmt->close();
+        return true;
+    } else {
+        $stmt->close();
+        return false;
+    }
+}
+
+function saveFormSubmissionData($user_id, $title, $subtitle, $abstract, $keyword, $references, $conn) {
+    $checkStmt = $conn->prepare("SELECT ja_id FROM upload_journal WHERE user_id = ? AND finish = 0");
+    $checkStmt->bind_param("i", $user_id);
+    $checkStmt->execute();
+    $checkStmt->bind_result($ja_id);
+    $checkStmt->fetch();
+    $checkStmt->close();
+
+    if ($ja_id) {
+        $stmt = $conn->prepare("UPDATE upload_journal SET title = ?, subtitle = ?, abstract = ?, keyword = ?, references = ?, date_uploads = NOW() WHERE ja_id = ?");
+        $stmt->bind_param("ssssss", $title, $subtitle, $abstract, $keyword, $references, $ja_id);
+    }
+
+    if ($stmt->execute()) {
+        $stmt->close();
+        return true;
+    } else {
+        $stmt->close();
+        return false;
+    }
+}
 
 // =============================== END OF USERS FUNCTIONS ==================================
 
@@ -621,6 +728,20 @@ function deleteCategoryJournalArticel($id, $conn) {
         echo json_encode(['status' => 'error', 'message' => 'Terjadi kesalahan saat memperbarui buku: ' . $update_stmt->error]);
     }
     $update_stmt->close();
+}
+
+
+function getCategories($conn) {
+    $sql = "SELECT * FROM categories_journal_artikel";
+    $result = $conn->query($sql);
+
+    $books = [];
+    if ($result->num_rows > 0) {
+        while($row = $result->fetch_assoc()) {
+            $books[] = $row;
+        }
+    }
+    return $books;
 }
 
 function getCategoriesJournalArticel($conn) {
