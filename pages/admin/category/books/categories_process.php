@@ -58,7 +58,7 @@ require_once DATABASE_PATH . 'db_config.php';
  * server-side, there is no need to edit below this line.
  */
  
-require('../../ssp.class.php');
+ require SSP_PATH;
  
 echo json_encode(
     SSP::simple( $_GET, $sql_details, $table, $primaryKey, $columns )
